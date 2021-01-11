@@ -15,10 +15,11 @@ limitations under the License. -->
 <template>
   <header class="rk-header flex-h">
     <div class="flex-h">
-      <svg class="svg-logo icon" style="margin-right:35px;margin-top:-5px">
+      <!-- <svg class="svg-logo icon" style="margin-right:35px;margin-top:-5px">
         <use xlink:href="#logo-sw"></use>
       </svg>
-      <span class="grey rocketbot">Rocketbot</span>
+      <span class="grey rocketbot">Rocketbot</span> -->
+      <span class="mr-20">{{ appName }}</span>
       <router-link class="nav-link mr-20" to="/" exact>
         <svg class="icon sm vm">
           <use xlink:href="#chart"></use>
@@ -60,12 +61,13 @@ limitations under the License. -->
         </span>
         {{ this.$t('second') }}
       </div>
-      <a class="rk-btn sm ghost" @click="handleReload">
+      <a class="rk-btn sm ghost mr-5" @click="handleReload">
         <svg class="icon mr-5 vm" :class="{ loading: auto }">
           <use xlink:href="#retry"></use>
         </svg>
         <span class="vm">{{ this.$t('reload') }}</span>
       </a>
+      <span>{{ nickname }}</span>
     </div>
   </header>
 </template>
@@ -83,6 +85,8 @@ limitations under the License. -->
     private auto: boolean = false;
     private autoTime: number = 6;
     private timer: any = null;
+    private nickname: string = window.localStorage.getItem('nickname') || '';
+    private appName: string = window.localStorage.getItem('appName') || '微服务监控系统';
     private handleReload() {
       const gap = this.duration.end.getTime() - this.duration.start.getTime();
       const utcCopy: any = -(new Date().getTimezoneOffset() / 60);
