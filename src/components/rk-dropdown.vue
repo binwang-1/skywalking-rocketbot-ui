@@ -16,12 +16,12 @@ limitations under the License. -->
   <rk-popper ref="popper" :trigger="trigger" :forceShow="show">
     <span slot="reference"><slot></slot></span>
     <div class="rk-dropdown" :style="`width:${width}`">
-      <input v-model="searchString" type="text" placeholder="搜索..." class="rk-dropdown-search" />
+      <input v-if="search" v-model="searchString" type="text" placeholder="搜索..." class="rk-dropdown-search" />
       <RkDropdownItem
         v-for="i in searchResult"
         :key="i.name"
         @click.native="handleClick(i)"
-        :detail="true"
+        :detail="false"
         :value="i.name"
       />
     </div>

@@ -67,7 +67,11 @@ limitations under the License. -->
         </svg>
         <span class="vm">{{ this.$t('reload') }}</span>
       </a>
-      <span>{{ nickname }}</span>
+      <RkDropdown v-if="!!nickname" width="90px" :options="options" @click="handleDropdownClick">
+        <div class="header-user">
+          {{ nickname }}
+        </div>
+      </RkDropdown>
     </div>
   </header>
 </template>
@@ -76,8 +80,11 @@ limitations under the License. -->
   import { Vue, Component } from 'vue-property-decorator';
   import { Action, State, Getter } from 'vuex-class';
   import timeFormat from '@/utils/timeFormat';
+  import RkDropdown from './rk-dropdown.vue';
 
-  @Component
+  @Component({
+    components: { RkDropdown },
+  })
   export default class Header extends Vue {
     @Getter('duration') private duration: any;
     @Action('SET_DURATION') private SET_DURATION: any;
@@ -87,6 +94,24 @@ limitations under the License. -->
     private timer: any = null;
     private nickname: string = window.localStorage.getItem('nickname') || '';
     private appName: string = window.localStorage.getItem('appName') || '微服务监控系统';
+    private options: object = [
+      {
+        name: '个人中心',
+        key: 'personal-center',
+        event: () => {
+          // TODO:跳转到个人中心
+          console.log('personal-center');
+        },
+      },
+      {
+        name: '退出登录',
+        key: 'sign-out',
+        event: () => {
+          // TODO:调用退出登录接口
+          console.log('sign-out');
+        },
+      },
+    ];
     private handleReload() {
       const gap = this.duration.end.getTime() - this.duration.start.getTime();
       const utcCopy: any = -(new Date().getTimezoneOffset() / 60);
@@ -117,6 +142,11 @@ limitations under the License. -->
       if (this.auto) {
         this.handleReload();
         this.timer = setInterval(this.handleReload, this.autoTime * 1000);
+      }
+    }
+    private handleDropdownClick(item: any) {
+      if (item.event) {
+        item.event();
       }
     }
   }
@@ -161,6 +191,12 @@ limitations under the License. -->
     .nav-link.active {
       opacity: 1;
       background-color: #333844;
+    }
+
+    .header-user {
+      width: 80px;
+      text-align: center;
+      cursor: pointer;
     }
   }
   .rk-header-user {
