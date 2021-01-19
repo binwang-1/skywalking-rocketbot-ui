@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import axios, { AxiosPromise } from 'axios';
+import axios, { AxiosPromise } from '@/graph/request';
 import { cancelToken } from '@/utils/cancelToken';
 import * as option from './query/option';
 import * as trace from './query/trace';

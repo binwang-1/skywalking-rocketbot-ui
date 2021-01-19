@@ -16,7 +16,7 @@
  */
 
 import { Commit, ActionTree, Dispatch } from 'vuex';
-import axios, { AxiosPromise, AxiosResponse } from 'axios';
+import axios, { AxiosPromise, AxiosResponse } from '@/graph/request';
 import { cancelToken } from '@/utils/cancelToken';
 import { State } from './dashboard-data';
 import fragmentAll from './constant-metrics-query';

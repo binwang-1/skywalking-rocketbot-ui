@@ -58,7 +58,7 @@ limitations under the License. -->
 <script lang="ts">
   import Vue from 'vue';
   import { Component } from 'vue-property-decorator';
-  import axios, { AxiosResponse } from 'axios';
+  import axios, { AxiosResponse } from '@/graph/request';
 
   interface Account {
     userName: string;

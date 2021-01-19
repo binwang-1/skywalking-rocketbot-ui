@@ -16,11 +16,19 @@
  */
 
 module.exports = {
+  // 打包静态资源(图片，css, js)放到fe-static目录下，html对静态资源的引用使用相对路径`/static/{应用名称}/`
+  publicPath: process.env.NODE_ENV === 'production' ? '/static/skywalking' : '/',
+  lintOnSave: process.env.NODE_ENV === 'development',
+  productionSourceMap: false,
   devServer: {
     proxy: {
-      '/graphql': {
-        target: `${process.env.SW_PROXY_TARGET || 'http://127.0.0.1:12800'}`,
+      [process.env.VUE_APP_BASE_API]: {
+        target: `${process.env.VUE_APP_SW_PROXY_TARGET || 'http://127.0.0.1:12800'}`,
         changeOrigin: true,
+        ws: true,
+        pathRewrite: {
+          ['^' + process.env.VUE_APP_BASE_API]: '',
+        },
       },
     },
   },

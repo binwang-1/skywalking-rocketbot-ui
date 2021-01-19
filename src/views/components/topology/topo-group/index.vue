@@ -43,7 +43,7 @@ limitations under the License. -->
   import { State as TopoGroupState } from '@/store/modules/topology/group';
   import CreateGroup from './create-group.vue';
   import GroupItem from './group-item.vue';
-  import Axios, { AxiosResponse } from 'axios';
+  import Axios, { AxiosResponse } from '@/graph/request';
 
   @Component({
     components: {

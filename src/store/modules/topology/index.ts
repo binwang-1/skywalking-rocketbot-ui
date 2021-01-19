@@ -18,7 +18,7 @@
 import { Commit, ActionTree, Dispatch } from 'vuex';
 import graph from '@/graph';
 import * as types from '../../mutation-types';
-import axios, { AxiosPromise, AxiosResponse } from 'axios';
+import axios, { AxiosPromise, AxiosResponse } from '@/graph/request';
 import { cancelToken } from '@/utils/cancelToken';
 
 interface Option {
