@@ -22,7 +22,7 @@ module.exports = {
   productionSourceMap: false,
   devServer: {
     proxy: {
-      [process.env.VUE_APP_BASE_API]: {
+      '/graphql': {
         target: `${process.env.VUE_APP_SW_PROXY_TARGET || 'http://127.0.0.1:12800'}`,
         changeOrigin: true,
         ws: true,
