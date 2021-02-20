@@ -38,7 +38,6 @@ import 'echarts/lib/component/tooltip';
 import VModal from 'vue-js-modal';
 import { queryOAPTimeInfo } from './utils/localtime';
 import './assets';
-import { param2Obj } from '@/utils';
 
 Vue.use(eventBus);
 Vue.use(VueI18n);
@@ -55,22 +54,6 @@ if (!savedLanguage) {
   window.localStorage.setItem('lang', language);
 }
 language = savedLanguage ? savedLanguage : language;
-
-// 缓存用户名
-const storeParams = () => {
-  const paramsMap = param2Obj(location.href);
-  const { nickname, appName, ...restParams } = paramsMap;
-  if (nickname) {
-    window.localStorage.setItem('nickname', nickname);
-  }
-  if (appName) {
-    window.localStorage.setItem('appName', appName);
-  }
-  if (nickname || appName) {
-    history.replaceState(restParams, '', location.pathname);
-  }
-};
-storeParams();
 
 const i18n = new VueI18n({
   locale: language,

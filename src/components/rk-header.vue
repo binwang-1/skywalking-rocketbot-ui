@@ -67,9 +67,9 @@ limitations under the License. -->
         </svg>
         <span class="vm">{{ this.$t('reload') }}</span>
       </a>
-      <RkDropdown v-if="!!nickname" width="90px" :options="options" @click="handleDropdownClick">
+      <RkDropdown width="90px" :options="options" @click="handleDropdownClick">
         <div class="header-user">
-          {{ nickname }}
+          {{ userInfo.username || 'unknown' }}
         </div>
       </RkDropdown>
     </div>
@@ -77,6 +77,10 @@ limitations under the License. -->
 </template>
 
 <script lang="ts">
+  import axios from 'axios';
+  import { openapi } from '@/graph';
+  import Cookies from 'js-cookie';
+
   import { Vue, Component } from 'vue-property-decorator';
   import { Action, State, Getter } from 'vuex-class';
   import timeFormat from '@/utils/timeFormat';
@@ -88,30 +92,64 @@ limitations under the License. -->
   export default class Header extends Vue {
     @Getter('duration') private duration: any;
     @Action('SET_DURATION') private SET_DURATION: any;
+    private UID_TT: string = 'uid_tt';
     private show: boolean = false;
     private auto: boolean = false;
     private autoTime: number = 6;
     private timer: any = null;
-    private nickname: string = window.localStorage.getItem('nickname') || '';
+    private userInfo: any = {};
     private appName: string = window.localStorage.getItem('appName') || '微服务监控系统';
     private options: object = [
       {
-        name: '个人中心',
-        key: 'personal-center',
-        event: () => {
-          // TODO:跳转到个人中心
-          console.log('personal-center');
-        },
-      },
-      {
         name: '退出登录',
         key: 'sign-out',
-        event: () => {
-          // TODO:调用退出登录接口
-          console.log('sign-out');
+        event: async () => {
+          const service = window.location.href;
+          const { data } = await openapi.get('/api/sso/logout', {
+            params: {
+              service,
+            },
+          });
+          if (data && data.redirect_url) {
+            location.href = data.redirect_url;
+          } else {
+            location.reload();
+          }
         },
       },
     ];
+    private async created() {
+      if (process.env.NODE_ENV === 'development') {
+        return;
+      }
+      this.verifyUser();
+      setInterval(this.verifyUser, 1000 * 10);
+      const org_id = await this.getOrgId();
+      if (org_id) {
+        this.getUserInfo(org_id);
+      }
+    }
+    // 校验登用户录状态
+    private verifyUser() {
+      if (!Cookies.get(this.UID_TT)) {
+        // 登出
+        const service = window.location.href;
+        window.location.href = `/login?service=${service}`;
+      }
+    }
+    private async getOrgId() {
+      const { data } = await openapi.get('/api/org/list');
+      if (data) {
+        const curr = data.find((item: any) => item.is_current);
+        return curr ? curr.org_id : undefined;
+      }
+    }
+    private async getUserInfo(org_id: string) {
+      const { data } = await openapi.get(`/api/org/${org_id}/user/get`);
+      if (data) {
+        this.userInfo = data;
+      }
+    }
     private handleReload() {
       const gap = this.duration.end.getTime() - this.duration.start.getTime();
       const utcCopy: any = -(new Date().getTimezoneOffset() / 60);

@@ -27,10 +27,7 @@ const getLocalTime = (i: number, t: Date | number) => {
 };
 
 const setTimezoneOffset = () => {
-  window.localStorage.setItem(
-    'utc',
-    -(new Date().getTimezoneOffset() / 60) + '',
-  );
+  window.localStorage.setItem('utc', -(new Date().getTimezoneOffset() / 60) + '');
 };
 
 export const queryOAPTimeInfo = async () => {
