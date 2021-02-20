@@ -58,7 +58,7 @@ limitations under the License. -->
 <script lang="ts">
   import Vue from 'vue';
   import { Component } from 'vue-property-decorator';
-  import axios, { AxiosResponse } from '@/graph/request';
+  import { service, AxiosResponse } from '@/graph';
 
   interface Account {
     userName: string;
@@ -90,7 +90,7 @@ limitations under the License. -->
         }
         this.$router.push('/');
       } else {
-        axios
+        service
           .post('/login/account', this.accountInfo)
           .then((res: AxiosResponse) => {
             window.localStorage.setItem('skywalking-authority', res.data.currentAuthority);

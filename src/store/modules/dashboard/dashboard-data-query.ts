@@ -16,7 +16,7 @@
  */
 
 import { Commit, ActionTree, Dispatch } from 'vuex';
-import axios, { AxiosPromise, AxiosResponse } from '@/graph/request';
+import { service, AxiosPromise, AxiosResponse } from '@/graph';
 import { cancelToken } from '@/utils/cancelToken';
 import { State } from './dashboard-data';
 import fragmentAll from './constant-metrics-query';
@@ -159,7 +159,7 @@ const actions: ActionTree<State, any> = {
     return Promise.all(
       variablesList.map((variable: any) => {
         if (variable) {
-          return axios
+          return service
             .post('/graphql', { query, variables: variable }, { cancelToken: cancelToken() })
             .then((res: AxiosResponse<any>) => {
               const resData = res.data.data;

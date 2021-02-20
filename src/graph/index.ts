@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import axios, { AxiosPromise } from '@/graph/request';
+import axios, * as foo from 'axios';
 import { cancelToken } from '@/utils/cancelToken';
 import * as option from './query/option';
 import * as trace from './query/trace';
@@ -33,6 +33,48 @@ const query: any = {
   ...dashboard,
 };
 
+export const service = axios.create({
+  baseURL: process.env.VUE_APP_BASE_API,
+});
+
+export const openapi = axios.create({
+  baseURL: '/datarangers',
+});
+
+//  接口校验,登出
+const logout = (response: AxiosResponse) => {
+  if (response && response.data && response.data.code === 1403) {
+    console.log('API logout');
+    const service = window.location.href;
+    window.location.href = `/login?service=${service}`;
+    return false;
+  }
+};
+
+service.interceptors.response.use(
+  function(response) {
+    logout(response);
+    return response;
+  },
+  function(error) {
+    throw error;
+  },
+);
+
+openapi.interceptors.response.use(
+  function(response) {
+    logout(response);
+    return response ? response.data : response;
+  },
+  function(error) {
+    throw error;
+  },
+);
+
+export import AxiosPromise = foo.AxiosPromise;
+
+export import AxiosResponse = foo.AxiosResponse;
+
 class Graph {
   private queryData: string = '';
   public query(queryData: string) {
@@ -40,7 +82,7 @@ class Graph {
     return this;
   }
   public params(variablesData: any): AxiosPromise<void> {
-    return axios.post(
+    return service.post(
       '/graphql',
       {
         query: query[this.queryData],

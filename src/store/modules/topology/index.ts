@@ -18,7 +18,7 @@
 import { Commit, ActionTree, Dispatch } from 'vuex';
 import graph from '@/graph';
 import * as types from '../../mutation-types';
-import axios, { AxiosPromise, AxiosResponse } from '@/graph/request';
+import { service, AxiosResponse } from '@/graph';
 import { cancelToken } from '@/utils/cancelToken';
 
 interface Option {
@@ -541,7 +541,7 @@ const actions: ActionTree<State, any> = {
       }`;
     });
     const querys = `query queryData(${variables}) {${fragment}}`;
-    return axios
+    return service
       .post('/graphql', { query: querys, variables: { duration: params.duration } }, { cancelToken: cancelToken() })
       .then((res: AxiosResponse) => {
         if (res.data.errors) {
@@ -595,7 +595,7 @@ const actions: ActionTree<State, any> = {
           })
           .join(' ');
         const query = `query queryData(${queryVariables}) {${fragments}}`;
-        return axios
+        return service
           .post('/graphql', { query, variables: { duration: params.duration } }, { cancelToken: cancelToken() })
           .then((json: AxiosResponse<any>) => {
             if (json.data.errors) {

@@ -43,7 +43,7 @@ limitations under the License. -->
   import { State as TopoGroupState } from '@/store/modules/topology/group';
   import CreateGroup from './create-group.vue';
   import GroupItem from './group-item.vue';
-  import Axios, { AxiosResponse } from '@/graph/request';
+  import { service, AxiosResponse } from '@/graph';
 
   @Component({
     components: {
@@ -87,20 +87,22 @@ limitations under the License. -->
       this.GET_TOPO({ duration: this.durationTime, serviceIds: this.services.map((i) => i.key) });
     }
     private fetchData() {
-      return Axios.post('/graphql', {
-        query: `
+      return service
+        .post('/graphql', {
+          query: `
           query queryServices($duration: Duration!) {
             services: getAllServices(duration: $duration) {
               key: id
               label: name
             }
           }`,
-        variables: {
-          duration: this.durationTime,
-        },
-      }).then((res: AxiosResponse) => {
-        this.servicesMap = res.data.data.services ? res.data.data.services : [];
-      });
+          variables: {
+            duration: this.durationTime,
+          },
+        })
+        .then((res: AxiosResponse) => {
+          this.servicesMap = res.data.data.services ? res.data.data.services : [];
+        });
     }
     private initGroupTopo() {
       let serviceOld = localStorage.getItem('topology-group-history') || '';
